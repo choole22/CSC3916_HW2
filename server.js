@@ -72,13 +72,13 @@ router.post('/signin', function (req, res) {
     }
 });
 
-router.post('/movies', function (req, res) {
+router.get('/movies', function (req, res) {
     var newMovie = db.findOne(req.body.mTitle);
     db.save(newMovie);
     res.json ({status: 200, msg: 'Get movies'});
 });
 
-router.get('/movies', function (req, res) {
+router.post('/movies', function (req, res) {
     if (!req.body.username || !req.body.password) {
         res.json({success: false, msg: 'Please include both username and password to signup.'})
     } else {
