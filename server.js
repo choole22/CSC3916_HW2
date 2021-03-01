@@ -73,78 +73,48 @@ router.post('/signin', function (req, res) {
 });
 
 router.get('/movies', function (req, res) {
-    var newMovie = db.findOne(req.body.mTitle);
-    db.save(newMovie);
-    res.json ({status: 200, msg: 'Get movies'});
+    var getMovie = db.findOne(req.body.mTitle);;
+    res.json ({status: 200, msg: 'GET movies'});
 });
 
 router.post('/movies', function (req, res) {
    var newMovie = {
        Movie_Title: req.body.mTitle
    };
-   
-   db.save(newMovie);
+
+   db.save(newMovie); // No Dup-checking
    res.json({status: 200, msg: 'Movie saved'})
 });
 
-router.put('/movies', function (req, res) {
-    var user = db.findOne(req.body.username);
-
-    if (!user) {
-        res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
-    } else {
-        if (req.body.password == user.password) {
-            var userToken = { id: user.id, username: user.username };
-            var token = jwt.sign(userToken, process.env.SECRET_KEY);
-            res.json ({success: true, token: 'JWT ' + token});
-        }
-        else {
-            res.status(401).send({success: false, msg: 'Authentication failed.'});
-        }
-    }
-});
-
-router.delete('/movies', function (req, res) {
-    var user = db.findOne(req.body.username);
-
-    if (!user) {
-        res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
-    } else {
-        if (req.body.password == user.password) {
-            var userToken = { id: user.id, username: user.username };
-            var token = jwt.sign(userToken, process.env.SECRET_KEY);
-            res.json ({success: true, token: 'JWT ' + token});
-        }
-        else {
-            res.status(401).send({success: false, msg: 'Authentication failed.'});
-        }
-    }
-});
-
-router.route('/testcollection')
+router.route('/movies')
     .delete(authController.isAuthenticated, function(req, res) {
-        console.log(req.body);
+        //console.log(req.body);
         res = res.status(200);
+        res.json({msg: 'Movie Deleted'})
+        /*
         if (req.get('Content-Type')) {
             res = res.type(req.get('Content-Type'));
         }
         var o = getJSONObjectForMovieRequirement(req);
         res.json(o);
+        */
     }
     )
     .put(authJwtController.isAuthenticated, function(req, res) {
         console.log(req.body);
         res = res.status(200);
+        res.json({msg: 'Movie Updated'})
+    /*
         if (req.get('Content-Type')) {
             res = res.type(req.get('Content-Type'));
         }
         var o = getJSONObjectForMovieRequirement(req);
         res.json(o);
+    */
+
     }
     );
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
 module.exports = app; // for testing only
-
-
