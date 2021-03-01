@@ -72,6 +72,60 @@ router.post('/signin', function (req, res) {
     }
 });
 
+router.post('/movies', function (req, res) {
+    var newMovie = db.findOne(req.body.mTitle);
+    db.save(newMovie);
+    res.json ({status: 200, msg: 'Get movies'});
+});
+
+router.get('/movies', function (req, res) {
+    if (!req.body.username || !req.body.password) {
+        res.json({success: false, msg: 'Please include both username and password to signup.'})
+    } else {
+        var newUser = {
+            username: req.body.username,
+            password: req.body.password
+        };
+
+        db.save(newUser); //no duplicate checking
+        res.json({success: true, msg: 'Successfully created new user.'})
+    }
+});
+
+router.put('/movies', function (req, res) {
+    var user = db.findOne(req.body.username);
+
+    if (!user) {
+        res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
+    } else {
+        if (req.body.password == user.password) {
+            var userToken = { id: user.id, username: user.username };
+            var token = jwt.sign(userToken, process.env.SECRET_KEY);
+            res.json ({success: true, token: 'JWT ' + token});
+        }
+        else {
+            res.status(401).send({success: false, msg: 'Authentication failed.'});
+        }
+    }
+});
+
+router.delete('/movies', function (req, res) {
+    var user = db.findOne(req.body.username);
+
+    if (!user) {
+        res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
+    } else {
+        if (req.body.password == user.password) {
+            var userToken = { id: user.id, username: user.username };
+            var token = jwt.sign(userToken, process.env.SECRET_KEY);
+            res.json ({success: true, token: 'JWT ' + token});
+        }
+        else {
+            res.status(401).send({success: false, msg: 'Authentication failed.'});
+        }
+    }
+});
+
 router.route('/testcollection')
     .delete(authController.isAuthenticated, function(req, res) {
         console.log(req.body);
