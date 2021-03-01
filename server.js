@@ -79,17 +79,12 @@ router.get('/movies', function (req, res) {
 });
 
 router.post('/movies', function (req, res) {
-    if (!req.body.username || !req.body.password) {
-        res.json({success: false, msg: 'Please include both username and password to signup.'})
-    } else {
-        var newUser = {
-            username: req.body.username,
-            password: req.body.password
-        };
-
-        db.save(newUser); //no duplicate checking
-        res.json({success: true, msg: 'Successfully created new user.'})
-    }
+   var newMovie = {
+       Movie_Title: req.body.mTitle
+   };
+   
+   db.save(newMovie);
+   res.json({status: 200, msg: 'Movie saved'})
 });
 
 router.put('/movies', function (req, res) {
