@@ -74,7 +74,7 @@ router.post('/signin', function (req, res) {
 
 router.get('/movies', function (req, res) {
     var getMovie = db.findOne(req.body.mTitle);;
-    res.json ({status: 200, msg: 'GET movies'});
+    res.json ({status: 200, msg: 'GET movies2'});
 });
 
 router.post('/movies', function (req, res) {
